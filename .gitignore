@@ -1,0 +1,55 @@
+# Build results / directories
+[Bb]in/
+[Oo]bj/
+[Ll]ogs/
+[Tt]emp/
+[Rr]elease/
+[Dd]ebug/
+publish/
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# JetBrains Rider files
+.idea/
+
+# NuGet package directories & caches
+[Pp]ackages/
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet Restores and Caches
+*.nuget.cache
+*.nuget.g.props
+*.nuget.g.targets
+
+# Environment variables & Sensitive configs (BELANGRIJK)
+.env
+appsettings.Development.json
+appsettings.Local.json
+*.pem
+*.key
+
+# Docker specific logs or data (indien lokaal gegenereerd)
+docker-compose.override.yml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

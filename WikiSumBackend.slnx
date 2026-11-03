@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="WikiSumBackend.Application/WikiSumBackend.Application.csproj" />
+  <Project Path="WikiSumBackend.Contracts/WikiSumBackend.Contracts.csproj" />
+  <Project Path="WikiSumBackend.Domain/WikiSumBackend.Domain.csproj" />
+  <Project Path="WikiSumBackend.Infrastructure/WikiSumBackend.Infrastructure.csproj" />
+  <Project Path="WikiSumBackend/WikiSumBackend.API.csproj" />
+</Solution>
