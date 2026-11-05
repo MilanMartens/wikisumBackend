@@ -36,14 +36,15 @@ public class WebpageController : ControllerBase
     }
 
     // GET: api/Webpage/1
-    [HttpGet("{id}")]
-    public async Task<ActionResult<WebpageDto>> GetById(int id)
+    [HttpGet("{url}")]
+    public async Task<ActionResult<WebpageDto>> GetById(string url)
     {
+        string decodedUrl = Uri.UnescapeDataString(url);
         var webpage = await _context.Webpage
             .AsNoTracking()
             .Include(w => w.Chapters)
                 .ThenInclude(c => c.Summaries)
-            .FirstOrDefaultAsync(w => w.Id == id);
+            .FirstOrDefaultAsync(w => w.Url == decodedUrl);
 
         if (webpage == null)
             return NotFound();
@@ -74,15 +75,16 @@ public class WebpageController : ControllerBase
     }
 
     // PUT: api/Webpage/1
-    [HttpPut("{id}")]
+    [HttpPut("{url}")]
     public async Task<ActionResult<WebpageDto>> Update(
-        int id,
+        string url,
         UpdateWebpageDto dto)
     {
+        string decodedUrl = Uri.UnescapeDataString(url);
         var webpage = await _context.Webpage
             .Include(w => w.Chapters)
                 .ThenInclude(c => c.Summaries)
-            .FirstOrDefaultAsync(w => w.Id == id);
+            .FirstOrDefaultAsync(w => w.Url == decodedUrl);
 
         if (webpage == null)
             return NotFound();
@@ -98,11 +100,13 @@ public class WebpageController : ControllerBase
     }
 
     // DELETE: api/Webpage/1
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{url}")]
+    public async Task<IActionResult> Delete(string url)
     {
+        string decodedUrl = Uri.UnescapeDataString(url);
+
         var webpage = await _context.Webpage
-            .FindAsync(id);
+            .FirstOrDefaultAsync(w => w.Url == decodedUrl);
 
         if (webpage == null)
             return NotFound();
