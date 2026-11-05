@@ -37,7 +37,7 @@ public class WebpageController : ControllerBase
 
     // GET: api/Webpage/1
     [HttpGet("{url}")]
-    public async Task<ActionResult<WebpageDto>> GetById(string url)
+    public async Task<ActionResult<WebpageDto>> GetByUrl(string url)
     {
         string decodedUrl = Uri.UnescapeDataString(url);
         var webpage = await _context.Webpage
@@ -68,8 +68,8 @@ public class WebpageController : ControllerBase
         var result = _mapper.Map<WebpageDto>(webpage);
 
         return CreatedAtAction(
-            nameof(GetById),
-            new { id = webpage.Id },
+            nameof(GetByUrl),
+            new { url = Uri.EscapeDataString(webpage.Url) },
             result
         );
     }
