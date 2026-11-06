@@ -9,6 +9,9 @@ namespace WikiSumBackend.API.MappingProfiles
         public TranslationProfile()
         {
             CreateMap<ChapterTranslation, TranslationDto>();
+            CreateMap<CreateTranslationDto, ChapterTranslation>()
+               .ForMember(dest => dest.Id, opt => opt.Ignore())
+               .ForMember(dest => dest.Chapter, opt => opt.Ignore());
         }
     }
 }
