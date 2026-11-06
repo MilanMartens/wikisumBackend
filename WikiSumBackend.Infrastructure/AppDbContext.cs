@@ -12,7 +12,7 @@ namespace WikiSumBackend.Infrastructure
         public DbSet<Webpage> Webpage { get; set; }
 
         public DbSet<Chapter> Chapter { get; set; }
-
+        public DbSet<ChapterTranslation> ChapterTranslation { get; set; }
         public DbSet<Summary> Summary { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,11 +26,18 @@ namespace WikiSumBackend.Infrastructure
                 .HasForeignKey(c => c.WebpageId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Chapter 1 -> * Summary
+            // Chapter 1 -> * ChapterTranslation
+            modelBuilder.Entity<ChapterTranslation>()
+                .HasOne(t => t.Chapter)
+                .WithMany(c => c.Translations)
+                .HasForeignKey(t => t.ChapterId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // ChapterTranslation 1 -> * Summary
             modelBuilder.Entity<Summary>()
-                .HasOne(s => s.Chapter)
-                .WithMany(c => c.Summaries)
-                .HasForeignKey(s => s.ChapterId)
+                .HasOne(s => s.ChapterTranslation)
+                .WithMany(t => t.Summaries)
+                .HasForeignKey(s => s.ChapterTranslationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Required properties
@@ -38,17 +45,22 @@ namespace WikiSumBackend.Infrastructure
                 .Property(w => w.Url)
                 .IsRequired();
 
-            modelBuilder.Entity<Chapter>()
-                .Property(c => c.Title)
+            modelBuilder.Entity<ChapterTranslation>()
+                .Property(t => t.Title)
+                .IsRequired();
+
+            modelBuilder.Entity<ChapterTranslation>()
+                .Property(t => t.Language)
                 .IsRequired();
 
             modelBuilder.Entity<Summary>()
                 .Property(s => s.SummaryText)
                 .IsRequired();
 
-            modelBuilder.Entity<Summary>()
-                .Property(s => s.Language)
-                .IsRequired();
+            // One translation per language per chapter
+            modelBuilder.Entity<ChapterTranslation>()
+                .HasIndex(t => new { t.ChapterId, t.Language })
+                .IsUnique();
         }
     }
 }

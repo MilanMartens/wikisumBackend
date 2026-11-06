@@ -1,8 +1,11 @@
-﻿namespace WikiSumBackend.Contracts.Chapter
+﻿using WikiSumBackend.Contracts.Translation;
+
+namespace WikiSumBackend.Contracts.Chapter
 {
     public class UpdateChapterDto
     {
-        // Ik laat WebpageId weg uit UpdateChapterDto, omdat een hoofdstuk bij dezelfde webpagina blijft horen.
-        public string Title { get; set; } = string.Empty;
+        public string OriginalTitle { get; set; } = string.Empty;
+        public List<UpdateChapterTranslationDto> Translations { get; set; }
+        = new();
     }
 }

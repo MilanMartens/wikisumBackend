@@ -29,10 +29,6 @@ namespace WikiSumBackend.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("WebpageId")
                         .HasColumnType("integer");
 
@@ -43,7 +39,7 @@ namespace WikiSumBackend.Infrastructure.Migrations
                     b.ToTable("Chapter");
                 });
 
-            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.Summary", b =>
+            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.ChapterTranslation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,13 +54,36 @@ namespace WikiSumBackend.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChapterId", "Language")
+                        .IsUnique();
+
+                    b.ToTable("ChapterTranslation");
+                });
+
+            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.Summary", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterTranslationId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SummaryText")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChapterId");
+                    b.HasIndex("ChapterTranslationId");
 
                     b.ToTable("Summary");
                 });
@@ -97,10 +116,10 @@ namespace WikiSumBackend.Infrastructure.Migrations
                     b.Navigation("Webpage");
                 });
 
-            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.Summary", b =>
+            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.ChapterTranslation", b =>
                 {
                     b.HasOne("WikiSumBackend.Domain.Entiteiten.Chapter", "Chapter")
-                        .WithMany("Summaries")
+                        .WithMany("Translations")
                         .HasForeignKey("ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -108,7 +127,23 @@ namespace WikiSumBackend.Infrastructure.Migrations
                     b.Navigation("Chapter");
                 });
 
+            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.Summary", b =>
+                {
+                    b.HasOne("WikiSumBackend.Domain.Entiteiten.ChapterTranslation", "ChapterTranslation")
+                        .WithMany("Summaries")
+                        .HasForeignKey("ChapterTranslationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChapterTranslation");
+                });
+
             modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.Chapter", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("WikiSumBackend.Domain.Entiteiten.ChapterTranslation", b =>
                 {
                     b.Navigation("Summaries");
                 });

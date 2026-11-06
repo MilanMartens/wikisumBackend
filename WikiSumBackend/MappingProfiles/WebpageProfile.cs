@@ -10,9 +10,11 @@ namespace WikiSumBackend.API.MappingProfiles
         {
             CreateMap<Webpage, WebpageDto>();
 
+            CreateMap<UpdateWebpageDto, Webpage>();
+
             CreateMap<CreateWebpageDto, Webpage>();
 
-            CreateMap<UpdateWebpageDto, Webpage>();
+            CreateMap<CreateWebpageDto, Webpage>();
         }
     }
 }

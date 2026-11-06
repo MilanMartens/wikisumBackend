@@ -27,7 +27,8 @@ public class WebpageController : ControllerBase
         var webpages = await _context.Webpage
             .AsNoTracking()
             .Include(w => w.Chapters)
-                .ThenInclude(c => c.Summaries)
+                .ThenInclude(c => c.Translations)
+                    .ThenInclude(t => t.Summaries)
             .ToListAsync();
 
         var result = _mapper.Map<List<WebpageDto>>(webpages);
@@ -40,10 +41,12 @@ public class WebpageController : ControllerBase
     public async Task<ActionResult<WebpageDto>> GetByUrl(string url)
     {
         string decodedUrl = Uri.UnescapeDataString(url);
+
         var webpage = await _context.Webpage
             .AsNoTracking()
             .Include(w => w.Chapters)
-                .ThenInclude(c => c.Summaries)
+                .ThenInclude(c => c.Translations)
+                    .ThenInclude(t => t.Summaries)
             .FirstOrDefaultAsync(w => w.Url == decodedUrl);
 
         if (webpage == null)
@@ -56,8 +59,7 @@ public class WebpageController : ControllerBase
 
     // POST: api/Webpage
     [HttpPost]
-    public async Task<ActionResult<WebpageDto>> Create(
-        CreateWebpageDto dto)
+    public async Task<ActionResult<WebpageDto>> Create(CreateWebpageDto dto)
     {
         var webpage = _mapper.Map<Webpage>(dto);
 
@@ -77,20 +79,56 @@ public class WebpageController : ControllerBase
     // PUT: api/Webpage/1
     [HttpPut("{url}")]
     public async Task<ActionResult<WebpageDto>> Update(
-        string url,
-        UpdateWebpageDto dto)
+    string url,
+    UpdateWebpageDto dto)
     {
         string decodedUrl = Uri.UnescapeDataString(url);
+
         var webpage = await _context.Webpage
             .Include(w => w.Chapters)
-                .ThenInclude(c => c.Summaries)
+                .ThenInclude(c => c.Translations)
+                    .ThenInclude(t => t.Summaries)
             .FirstOrDefaultAsync(w => w.Url == decodedUrl);
 
         if (webpage == null)
             return NotFound();
 
-        // Bestaande gegevens updaten
-        _mapper.Map(dto, webpage);
+        foreach (var chapterDto in dto.Chapters)
+        {
+            var chapter = webpage.Chapters.FirstOrDefault(c => c.Translations.Any(t => t.Title == chapterDto.OriginalTitle));
+
+            if (chapter == null)
+                continue;
+
+            foreach (var translationDto in chapterDto.Translations)
+            {
+                var translation = chapter.Translations
+                    .FirstOrDefault(t => t.Language == translationDto.Language);
+
+                if (translation == null)
+                {
+                    translation = new ChapterTranslation
+                    {
+                        Language = translationDto.Language,
+                        Title = translationDto.Title,
+                        ChapterId = chapter.Id
+                    };
+
+                    chapter.Translations.Add(translation);
+                }
+                else
+                {
+                    translation.Title = translationDto.Title;
+                }
+
+                foreach (var summaryDto in translationDto.Summaries)
+                {
+                    var newSummary = _mapper.Map<Summary>(summaryDto);
+
+                    translation.Summaries.Add(newSummary);
+                }
+            }
+        }
 
         await _context.SaveChangesAsync();
 
@@ -118,3 +156,4 @@ public class WebpageController : ControllerBase
         return NoContent();
     }
 }
+
