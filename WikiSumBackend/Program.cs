@@ -20,18 +20,7 @@ builder.Services.AddAutoMapper(
    cfg => cfg.LicenseKey = builder.Configuration["AutoMapperKey"],
    AppDomain.CurrentDomain.GetAssemblies());
 
-
-
 var app = builder.Build();
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy("AllowAngular", policy =>
-//    {
-//        policy.AllowAnyOrigin()
-//              .AllowAnyHeader()
-//              .AllowAnyMethod();
-//    });
-//});
 
 // laat dit staan, dit zorgt dat onze db altijd uptodate is en nooit error krijgen :)
 using (var scope = app.Services.CreateScope())

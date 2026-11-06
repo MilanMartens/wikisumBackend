@@ -10,15 +10,6 @@ namespace WikiSumBackend.Domain.Entiteiten
         public int Id { get; set; }
 
         public string SummaryText { get; set; } = string.Empty;
-
-        //public string Language { get; set; } = string.Empty;
-
-        //// Foreign key
-        //public int ChapterId { get; set; }
-
-        //// Navigation property
-        //public Chapter Chapter { get; set; } = null!;
-
         public int ChapterTranslationId { get; set; }
 
         public ChapterTranslation ChapterTranslation { get; set; } = null!;
