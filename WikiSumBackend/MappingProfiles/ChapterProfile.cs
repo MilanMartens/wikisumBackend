@@ -13,6 +13,7 @@ namespace WikiSumBackend.API.MappingProfiles
             CreateMap<CreateChapterDto, Chapter>();
 
             CreateMap<UpdateChapterDto, Chapter>();
+
         }
     }
 }
